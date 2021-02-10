@@ -27,6 +27,8 @@ function do_game(){
     # change directory
     pushd ${BURGER_WAR_KIT_REPOSITORY}
 
+    bash scripts/capture.sh -m "start"
+
     # wakeup gazebo/judgeserver
     PROCESS_NUM=`ps -ux | grep "sim_with_judge.sh" | grep -v "grep"  | wc -l`
     if [ $PROCESS_NUM -eq 0 ]; then
@@ -59,6 +61,13 @@ function do_game(){
     # output result
     echo "$ITERATION, $ENEMY_LEVEL, $GAME_TIME, $DATE, $MY_SCORE, $ENEMY_SCORE, $BATTLE_RESULT, $MY_SIDE" >> $RESULTLOG
     tail -1 $RESULTLOG
+
+    # save video
+    TODAY=`date +"%Y%m%d"`
+    VIDEO_DIRECTORY_PATH="${HOME}/video/${TODAY}/"
+    mkdir -p ${VIDEO_DIRECTORY_PATH}
+    VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
+    bash scripts/capture.sh -m "stop" -n ${VIDEO_NAME}
 
     # reset
     bash scripts/reset.sh
