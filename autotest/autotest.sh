@@ -69,9 +69,12 @@ function do_game(){
     VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
     bash scripts/capture.sh -m "stop" -n ${VIDEO_NAME}
 
-    # reset
-    bash scripts/reset.sh
-    sleep 3
+    ## reset
+    #bash scripts/reset.sh
+    #sleep 3
+    # stop
+    bash scripts/stop.sh
+    sleep 10
 
     popd
 }
