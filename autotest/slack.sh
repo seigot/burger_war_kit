@@ -1,7 +1,6 @@
 #!/bin/bash
 
 declare SLACK_SH_DRYRUN="false"
-declare SLACK_SH_USE_TEST_CHANNEL="false"
 declare -i SLACK_SH_GAME_COUNT=0
 declare -i SLACK_SH_WIN_COUNT=0
 declare SLACK_SH_LAST_GIT_HASH=""
@@ -18,10 +17,9 @@ function send_slack() {
     local HOSTNAME="$(uname -n)"
     local GIT_HASH="$(git -C ${SLACK_SH_BURGER_WAR_DEV_REPOSITORY} rev-parse --short HEAD)"
 
-    if [ "${SLACK_SH_USE_TEST_CHANNEL}" = "true" ]; then
-        local WEBHOOK="https://hooks.slack.com/services/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"
-    else
-        local WEBHOOK="https://hooks.slack.com/services/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"
+    if [ -z "${SLACK_SH_WEBHOOK_URI}" ]; then
+	echo "send_slack: Please set SLACK_SH_WEBHOOK_URI env var."
+	return 1
     fi
 
     local RED="D00000"
@@ -61,7 +59,7 @@ EOF
 
     curl -X POST \
          -H 'Content-type: application/json' \
-         --data "${PAYLOAD}" ${WEBHOOK} 
+         --data "${PAYLOAD}" ${SLACK_SH_WEBHOOK_URI}
 }
 
 # The followings are test code.
@@ -71,7 +69,6 @@ return 1 2>/dev/null || true
 
 function test_send_slack() {
     SLACK_SH_DRYRUN="true"
-    SLACK_SH_USE_TEST_CHANNEL="true"
 
     send_slack 0 1 300 2021-02-09T12:52:36+00:00 10 0 WIN r
     send_slack 0 1 300 2021-02-09T12:52:36+00:00 10 0 LOSE r
