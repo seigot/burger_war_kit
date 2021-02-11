@@ -15,6 +15,16 @@ echo "iteration, enemy_level, game_time(s), date, my_score, enemy_score, battle_
 
 LOOP_TIMES=10
 
+# get option
+IS_CAPTURE_VIDEO="false"
+while getopts c: OPT
+do
+  case $OPT in
+    "c" ) IS_CAPTURE_VIDEO="$OPTARG" ;;
+  esac
+done
+
+# function
 function do_game(){
     ITERATION=$1
     ENEMY_LEVEL=$2
@@ -27,8 +37,9 @@ function do_game(){
     # change directory
     pushd ${BURGER_WAR_KIT_REPOSITORY}
 
-    #bash scripts/capture.sh -m "start"
-
+    # start capture
+    do_capture "start"
+    
     # wakeup gazebo/judgeserver
     PROCESS_NUM=`ps -ux | grep "sim_with_judge.sh" | grep -v "grep"  | wc -l`
     if [ $PROCESS_NUM -eq 0 ]; then
@@ -67,14 +78,13 @@ function do_game(){
     VIDEO_DIRECTORY_PATH="${HOME}/video/${TODAY}/"
     mkdir -p ${VIDEO_DIRECTORY_PATH}
     VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
-    #bash scripts/capture.sh -m "stop" -n ${VIDEO_NAME}
+    do_capture "stop" "VIDEO_NAME"
 
     ## reset
     #bash scripts/reset.sh
     #sleep 3
     # stop
-    bash scripts/stop.sh -s "true"
-    sleep 10
+    stop_game
 
     popd
 }
@@ -83,9 +93,29 @@ function stop_game(){
     # stop
     # wait stop until all process is end
     pushd ${BURGER_WAR_KIT_REPOSITORY}
-    bash scripts/stop.sh -s true
+    bash scripts/stop.sh -s "true"
     sleep 10
     popd
+}
+
+function do_capture(){
+
+    local CAPTURE_OPTION=$1
+    local VIDEO_NAME=$2
+    
+    # if true, capture video
+    if [ ${IS_CAPTURE_VIDEO} != "true" ]; then
+	echo "skip capture"
+	return 0
+    fi
+
+    if [ ${CAPTURE_OPTION} == "start" ]; then    
+	bash scripts/capture.sh -m "start"
+    elif [ ${CAPTURE_OPTION} == "stop" ]; then
+	bash scripts/capture.sh -m "stop" -n ${VIDEO_NAME}
+    else
+	echo "invalid option: ${CAPTURE_OPTION}"
+    fi
 }
 
 # commentout--->
@@ -180,4 +210,3 @@ do
     #do_push
 done
 
-stop_game
