@@ -24,6 +24,8 @@ do
   esac
 done
 
+source autotest/slack.sh
+
 # function
 function do_game(){
     ITERATION=$1
@@ -72,6 +74,7 @@ function do_game(){
     # output result
     echo "$ITERATION, $ENEMY_LEVEL, $GAME_TIME, $DATE, $MY_SCORE, $ENEMY_SCORE, $BATTLE_RESULT, $MY_SIDE" >> $RESULTLOG
     tail -1 $RESULTLOG
+    send_slack "$ITERATION" "$ENEMY_LEVEL" "$GAME_TIME" "$DATE" "$MY_SCORE" "$ENEMY_SCORE" "$BATTLE_RESULT" "$MY_SIDE"
 
     # save video
     TODAY=`date +"%Y%m%d"`
