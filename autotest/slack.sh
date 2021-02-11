@@ -17,12 +17,11 @@ function send_slack() {
     local MY_SIDE="$8"
     local HOSTNAME="$(uname -n)"
     local GIT_HASH="$(git -C ${SLACK_SH_BURGER_WAR_DEV_REPOSITORY} rev-parse --short HEAD)"
-    local WEBHOOK="https://hooks.slack.com/services/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"
 
     if [ "${SLACK_SH_USE_TEST_CHANNEL}" = "true" ]; then
-        local CHANNEL="#test"
+        local WEBHOOK="https://hooks.slack.com/services/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"
     else
-        local CHANNEL="#2021冬ロボコンautotest"
+        local WEBHOOK="https://hooks.slack.com/services/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"
     fi
 
     local RED="D00000"
@@ -44,7 +43,6 @@ function send_slack() {
 
     PAYLOAD=$(cat <<EOF
 {
-  "channel": "${CHANNEL}",
   "username": "autotest",
   "text": "${GIT_HASH}@${HOSTNAME} record:${SLACK_SH_WIN_COUNT}/${SLACK_SH_GAME_COUNT}",
   "attachments": [{
