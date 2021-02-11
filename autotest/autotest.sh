@@ -73,7 +73,7 @@ function do_game(){
     #bash scripts/reset.sh
     #sleep 3
     # stop
-    bash scripts/stop.sh
+    bash scripts/stop.sh -s "true"
     sleep 10
 
     popd

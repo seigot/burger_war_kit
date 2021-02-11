@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+###
+# option 
+# -s : sync stop ( $stop.sh -s "true" )
+###
+
 # option
 IS_SYNC_KILL="false"
 while getopts s: OPT
