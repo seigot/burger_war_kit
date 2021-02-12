@@ -24,7 +24,9 @@ do
   esac
 done
 
+pushd ${BURGER_WAR_KIT_REPOSITORY}
 source autotest/slack.sh
+popd
 
 # function
 function do_game(){
