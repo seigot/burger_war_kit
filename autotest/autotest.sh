@@ -87,7 +87,7 @@ function do_game(){
     VIDEO_DIRECTORY_PATH="${HOME}/video/${TODAY}/"
     mkdir -p ${VIDEO_DIRECTORY_PATH}
     VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
-    do_capture "stop" "VIDEO_NAME"
+    do_capture "stop" "$VIDEO_NAME"
 
     ## reset
     #bash scripts/reset.sh
