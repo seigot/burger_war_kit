@@ -23,6 +23,10 @@ do
     "c" ) IS_CAPTURE_VIDEO="$OPTARG" ;;
   esac
 done
+# echo option parameter
+echo "LOOP_TIMES: ${LOOP_TIMES}"
+echo "IS_CAPTURE_VIDEO: ${IS_CAPTURE_VIDEO}"
+
 
 pushd ${BURGER_WAR_KIT_REPOSITORY}
 source autotest/slack.sh
