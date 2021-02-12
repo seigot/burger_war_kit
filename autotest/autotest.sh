@@ -114,6 +114,7 @@ function do_capture(){
 	return 0
     fi
 
+    pushd ${BURGER_WAR_KIT_REPOSITORY}
     if [ ${CAPTURE_OPTION} == "start" ]; then    
 	bash scripts/capture.sh -m "start"
     elif [ ${CAPTURE_OPTION} == "stop" ]; then
@@ -121,6 +122,9 @@ function do_capture(){
     else
 	echo "invalid option: ${CAPTURE_OPTION}"
     fi
+    popd
+
+    return 0
 }
 
 # commentout--->
