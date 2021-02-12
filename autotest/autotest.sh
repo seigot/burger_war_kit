@@ -13,13 +13,13 @@ LATEST_GITLOG_HASH="xxxx"
 
 echo "iteration, enemy_level, game_time(s), date, my_score, enemy_score, battle_result, my_side" > $RESULTLOG
 
-LOOP_TIMES=10
-
 # get option
+LOOP_TIMES=10
 IS_CAPTURE_VIDEO="false"
-while getopts c: OPT
+while getopts l:c: OPT
 do
   case $OPT in
+    "l" ) LOOP_TIMES="$OPTARG" ;;
     "c" ) IS_CAPTURE_VIDEO="$OPTARG" ;;
   esac
 done
