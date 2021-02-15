@@ -89,6 +89,21 @@ function do_game(){
     VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
     do_capture "stop" "$VIDEO_NAME"
 
+    # upload video to youtube if LOSE
+    if [ -f "${VIDEO_NAME}" ] && [ "${BATTLE_RESULT}" = "LOSE" ]; then
+	if which youtube-upload > /dev/null &&
+		[ -f "${HOME}/.client_secrets.json" ] &&
+		[ -f "${HOME}/.youtube-upload-credentials.json" ]; then
+	    local VIDEO_TITLE="$(basename ${VIDEO_NAME})"
+	    local VIDEO_ID=$(youtube-upload --title "${VIDEO_TITLE}" "${VIDEO_NAME}")
+	    if [ $? -eq 0 ]; then
+		send_slack_video "${VIDEO_TITLE}" "${VIDEO_ID}"
+	    fi
+	else
+	    echo "${FUNCNAME[0]}: ${LINENO}: youtube-upload is unavailable" > /dev/stderr
+	fi
+    fi
+
     ## reset
     #bash scripts/reset.sh
     #sleep 3

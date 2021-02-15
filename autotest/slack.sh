@@ -39,7 +39,7 @@ function send_slack() {
         local COLOR="${RED}"
     fi
 
-    PAYLOAD=$(cat <<EOF
+    local PAYLOAD=$(cat <<EOF
 {
   "username": "autotest",
   "text": "${GIT_HASH}@${HOSTNAME} record:${SLACK_SH_WIN_COUNT}/${SLACK_SH_GAME_COUNT}",
@@ -62,14 +62,40 @@ EOF
          --data "${PAYLOAD}" ${SLACK_SH_WEBHOOK_URI}
 }
 
+function send_slack_video() {
+    if [ $# -ne 2 ]; then
+	echo "${FUNCNAME[0]}: ${LINENO}: Invalid args ($*)" > /dev/stderr
+	return
+    fi
+
+    local VIDEO_TITLE="$1"
+    local VIDEO_ID="$2"
+
+    local PAYLOAD=$(cat <<EOF
+{
+  "username": "autotest",
+  "text": "<https://www.youtube.com/watch?v=${VIDEO_ID}|${VIDEO_TITLE}>",
+  "icon_emoji": ":ghost:"
+}
+EOF
+       )
+
+    if [ "${SLACK_SH_DRYRUN}" = "true" ]; then
+        echo "${PAYLOAD}"
+        return
+    fi
+
+    curl -X POST \
+         -H 'Content-type: application/json' \
+         --data "${PAYLOAD}" ${SLACK_SH_WEBHOOK_URI}
+}
+
 # The followings are test code.
 # When source this script, return here
 return 1 2>/dev/null || true
 
 
 function test_send_slack() {
-    SLACK_SH_DRYRUN="true"
-
     send_slack 0 1 300 2021-02-09T12:52:36+00:00 10 0 WIN r
     send_slack 0 1 300 2021-02-09T12:52:36+00:00 10 0 LOSE r
     send_slack 0 1 300 2021-02-09T12:52:36+00:00 10 0 WIN r
@@ -93,5 +119,13 @@ function test_send_slack() {
     fi
 }
 
+function test_send_slack_video() {
+    send_slack_video "/home/ubuntu/video/20210213/GAME_2021-02-13T12:30:31+00:00_0_2_225_10_0_WIN_r.mp4" "eCa9F3UafL4"
+    send_slack_video
+    send_slack_video "hoge"
+}
+
+SLACK_SH_DRYRUN="true"
 test_send_slack
+test_send_slack_video
 echo SUCCESS
