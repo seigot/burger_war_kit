@@ -52,7 +52,7 @@ function do_game(){
     PROCESS_NUM=`ps -ux | grep "sim_with_judge.sh" | grep -v "grep"  | wc -l`
     if [ $PROCESS_NUM -eq 0 ]; then
 	# wakeup at once
-	gnome-terminal -- bash scripts/sim_with_judge.sh # -s ${MY_SIDE}
+	gnome-terminal -- bash scripts/sim_with_judge.sh -a # -s ${MY_SIDE}
 	sleep 30
     fi
     # start
