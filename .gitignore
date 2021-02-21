@@ -147,3 +147,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# captured video
+*.ogv
+*.mp4
