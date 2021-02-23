@@ -32,7 +32,31 @@ pushd ${BURGER_WAR_KIT_REPOSITORY}
 source autotest/slack.sh
 popd
 
-# function
+function search_window() {
+    xdotool search --sync --onlyvisible --name "$1"
+}
+
+function adjust_layout() {
+    local -ir UNIT=700
+
+    # Gazebo window is shown with maximized
+    # Ref: https://stackoverflow.com/questions/23850499/how-to-move-or-resize-x11-windows-even-if-they-are-maximized
+    local -r GAZEBO=$(search_window "Gazebo")
+    wmctrl -i -r ${GAZEBO} -b remove,maximized_vert,maximized_horz
+    xdotool windowunmap --sync ${GAZEBO}
+    xdotool windowmap --sync ${GAZEBO}
+    wmctrl -i -r ${GAZEBO} -e 0,0,0,${UNIT},${UNIT}
+    xdotool windowactivate --sync ${GAZEBO}
+
+    local -r SCORE_BOARD=$(search_window "burger war")
+    wmctrl -i -r ${SCORE_BOARD} -e 0,0,${UNIT},${UNIT},${UNIT}
+    xdotool windowactivate --sync ${SCORE_BOARD}
+
+    local -r RVIZ=$(search_window "RViz")
+    wmctrl -i -r ${RVIZ} -e 0,${UNIT},0,${UNIT},$((2*${UNIT}))
+    xdotool windowactivate --sync ${RVIZ}
+}
+
 function do_game(){
     ITERATION=$1
     ENEMY_LEVEL=$2
@@ -57,6 +81,7 @@ function do_game(){
     fi
     # start
     gnome-terminal -- bash scripts/start.sh -l ${ENEMY_LEVEL} -a # -s ${MY_SIDE}
+    adjust_layout
 
     # wait game finish
     sleep $GAME_TIME
