@@ -2,6 +2,16 @@
 set -e
 set -x
 
+declare IS_AUTOTEST="false"
+
+while getopts a OPT
+do
+  case $OPT in
+    "a" ) IS_AUTOTEST="true" ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 # check arg num
 if [ $# -ne 2 ]; then
     RED_NAME="you"
@@ -23,5 +33,9 @@ gnome-terminal -- python judge/JudgeWindow.py
 bash judge/test_scripts/init_single_play.sh judge/marker_set/sim.csv localhost:5000  $RED_NAME $BLUE_NAME
 
 # robot
-roslaunch burger_war setup_sim.launch
-
+if [ "${IS_AUTOTEST}" = "true" ]; then
+    roslaunch burger_war setup_sim.launch \
+	      world_file:=$(rospack find burger_war)/world/burger_field_autotest.world
+else
+    roslaunch burger_war setup_sim.launch
+fi

@@ -5,7 +5,7 @@
 #   $ sudo apt-get install -y ffmpeg
 
 # default value
-FPS=10           # capture frame per sec (ex.4)
+FPS=5           # capture frame per sec (ex.4)
 PLAYBACK_SPEED=1 # playback speed        (ex.8)
 CAPTURE_NAME="capture.mp4"
 MODE="start"
@@ -49,7 +49,7 @@ output_warning
 
 if [ $MODE == "start" ];then
     # capture start
-    gnome-terminal -- recordmydesktop --no-sound --no-cursor --fps ${FPS}
+    gnome-terminal -- recordmydesktop --no-sound --no-cursor --fps ${FPS} --width 1400 --height 1400
 
 elif [ $MODE == "stop" ];then
     #capture stop

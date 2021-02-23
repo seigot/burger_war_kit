@@ -2,10 +2,12 @@
 <launch>
   <arg name="enemy_level" default="1"/>
   <arg name="side" default="r" />
+  <arg name="rviz_file" default="burger_navigation.rviz"/>
 
 <!-- Your robot control node run  red side-->
   <include file="$(find burger_war_dev)/launch/your_burger.launch">
     <arg name="side" value="r" />
+    <arg name="rviz_file" value="$(arg rviz_file)"/>
   </include>
 
 <!-- enemy bot run  blue side-->
