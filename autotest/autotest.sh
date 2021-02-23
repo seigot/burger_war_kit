@@ -56,7 +56,7 @@ function do_game(){
 	sleep 30
     fi
     # start
-    gnome-terminal -- bash scripts/start.sh -l ${ENEMY_LEVEL} # -s ${MY_SIDE}
+    gnome-terminal -- bash scripts/start.sh -l ${ENEMY_LEVEL} -a # -s ${MY_SIDE}
 
     # wait game finish
     sleep $GAME_TIME
