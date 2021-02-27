@@ -4,7 +4,10 @@ declare SLACK_SH_DRYRUN="false"
 declare -i SLACK_SH_GAME_COUNT=0
 declare -i SLACK_SH_WIN_COUNT=0
 declare SLACK_SH_LAST_GIT_HASH=""
-declare SLACK_SH_BURGER_WAR_DEV_REPOSITORY=$HOME/catkin_ws/src/burger_war_dev
+declare -r SLACK_SH_BURGER_WAR_DEV_REPOSITORY=$HOME/catkin_ws/src/burger_war_dev
+declare -r SLACK_SH_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+source ${SLACK_SH_DIR}/parse_roslog.sh
+
 function send_slack() {
     local ITERATION="$1"
     local ENEMY_LEVEL="$2"
@@ -60,6 +63,8 @@ EOF
     curl -X POST \
          -H 'Content-type: application/json' \
          --data "${PAYLOAD}" ${SLACK_SH_WEBHOOK_URI}
+
+    parse_roslog "${GIT_HASH}@${HOSTNAME} ${BATTLE_RESULT} ${MY_SCORE} vs ${ENEMY_SCORE} ${DATE} ${ITERATION}-${ENEMY_LEVEL}"
 }
 
 function send_slack_video() {
