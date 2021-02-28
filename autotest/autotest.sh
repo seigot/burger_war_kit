@@ -57,6 +57,15 @@ function adjust_layout() {
     xdotool windowactivate --sync ${RVIZ}
 }
 
+function rename_log(){
+    local -r FILE_BASE_NAME="$1"
+    local -r LOG_DIR="${HOME}/.ros/log/"
+    if [ -L ${LOG_DIR}/latest ]; then
+	mv $(realpath ${LOG_DIR}/latest) ${LOG_DIR}/${FILE_BASE_NAME}
+	rm ${LOG_DIR}/latest
+    fi
+}
+
 function do_game(){
     ITERATION=$1
     ENEMY_LEVEL=$2
@@ -111,7 +120,8 @@ function do_game(){
     TODAY=`date +"%Y%m%d"`
     VIDEO_DIRECTORY_PATH="${HOME}/video/${TODAY}/"
     mkdir -p ${VIDEO_DIRECTORY_PATH}
-    VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/"GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}".mp4"
+    local -r FILE_BASE_NAME="GAME_${DATE}_${ITERATION}_${ENEMY_LEVEL}_${GAME_TIME}_${MY_SCORE}_${ENEMY_SCORE}_${BATTLE_RESULT}_${MY_SIDE}"
+    local -r VIDEO_NAME="${VIDEO_DIRECTORY_PATH}/${FILE_BASE_NAME}.mp4"
     do_capture "stop" "$VIDEO_NAME"
 
     # upload video to youtube if LOSE
@@ -134,6 +144,7 @@ function do_game(){
     #sleep 3
     # stop
     stop_game
+    rename_log "${FILE_BASE_NAME}"
 
     popd
 }
