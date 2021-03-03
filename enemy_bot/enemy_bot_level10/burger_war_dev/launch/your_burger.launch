@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="side" default="b"/> <!-- "b" = blue side, "r" = red side  -->
+  <arg name="name_space" default="enemy_bot"/>
+
+    <!-- You can change control program  -->
+
+    <!-- sample program node -->
+    <!--node pkg="burger_war_dev" type="randomRun.py" name="randomRun" output="screen"/-->
+    <!-- END sample program node -->
+
+    <!-- Navigation program  -->
+    <include file="$(find burger_navigation_level10)/launch/burger_navigation.launch" >
+      <arg name="name_space" default="$(arg name_space)"/>
+    </include>
+
+    <node pkg="burger_war_level10" type="navirun.py" name="navirun" output="screen">
+      <param name="side" value="$(arg side)"/>
+      <param name="name_space" value="$(arg name_space)" />
+    </node>
+
+    <!-- END Navigation program node -->
+
+    <!-- Looking at Enemy program -->
+    <node pkg="burger_war_level10" type="lookatenemy.py" name="lookatEnemy" output="screen">
+      <param name="name_space" value="$(arg name_space)" />
+    </node>
+    <!-- END Looking at Enemy program -->
+
+    <!-- End of your space  -->
+</launch>
+

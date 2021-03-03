@@ -1,0 +1,7 @@
+<library path="lib/libgo_backward_recovery">
+    <class name="go_backward_recovery/GoBackwardRecovery" type="go_backward_recovery::GoBackwardRecovery" base_class_type="nav_core::RecoveryBehavior">
+        <description>
+            A recovery behavior that performs going backward to attempt to clear out space.
+        </description>
+    </class>
+</library>

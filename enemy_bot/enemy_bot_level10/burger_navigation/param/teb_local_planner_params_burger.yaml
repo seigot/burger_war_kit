@@ -1,0 +1,102 @@
+TebLocalPlannerROS:
+
+  # Miscellaneous Parameters
+  odom_topic: odom
+  map_frame: /map
+
+
+  # Robot Configuration Parameters
+  acc_lim_x: 0.44 #2.0 #2.5
+  acc_lim_theta: 1.0 #0.2 #0.57 #1.0 #1.5 #2.0
+  max_vel_x: 0.22
+  max_vel_x_backwards: 0.22
+  max_vel_theta: 2.84
+  #min_turning_radius: 0.0
+  footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
+    type: "circular" #"point"
+    radius: 0.089 # for type "circular"
+    #line_start: [-0.3, 0.0] # for type "line"
+    #line_end: [0.3, 0.0] # for type "line"
+    #front_offset: 0.2 # for type "two_circles"
+    #front_radius: 0.2 # for type "two_circles"
+    #rear_offset: 0.2 # for type "two_circles"
+    #rear_radius: 0.2 # for type "two_circles"
+    #vertices: [ [0.25, -0.05], [0.18, -0.05], [0.18, -0.18], [-0.19, -0.18], [-0.25, 0], [-0.19, 0.18], [0.18, 0.18], [0.18, 0.05], [0.25, 0.05] ] # for type "polygon"
+  is_footprint_dynamic: false
+
+  # Goal Tolerance Parameters
+  xy_goal_tolerance: 0.15 #0.1
+  yaw_goal_tolerance: 0.26 #0.17
+  free_goal_vel: true #false
+
+  # Trajectory Configuration Parameters
+  teb_autosize: true
+  dt_ref: 0.3
+  dt_hysteresis: 0.03
+  min_samples: 3
+  global_plan_overwrite_orientation: true
+  global_plan_viapoint_sep: -0.1
+  max_global_plan_lookahead_dist: -1 #3.0
+  force_reinit_new_goal_dist: 1.0
+  feasibility_check_no_poses: 4
+  publish_feedback: false
+  shrink_horizon_backup: true
+  allow_init_with_backwards_motion: true
+  exact_arc_length: false
+  shrink_horizon_min_duration: 10.0
+
+  # Obstacle Parameters
+  min_obstacle_dist: 0.1 #0.0 #0.05
+  include_costmap_obstacles: false #true
+  costmap_obstacles_behind_robot_dist: 1.0
+  obstacle_poses_affected: 100 #30
+  inflation_dist: 0.6 #0.0 #0.6
+  include_dynamic_obstacles: false
+  legacy_obstacle_association: false
+  obstacle_association_force_inclusion_factor: 2.0
+  obstacle_association_cutoff_factor: 3.0 #5
+  #costmap_converter_plugin: ""
+  #costmap_converter_spin_thread: true
+  #costmap_converter_rate: 5
+
+  # Optimization Parameters
+  optimization_activate: true
+  optimization_verbose: false
+  no_inner_iterations: 5
+  no_outer_iterations: 4
+  penalty_epsilon: 0.1
+  weight_max_vel_x: 2
+  weight_max_vel_theta: 1
+  weight_acc_lim_x: 1
+  weight_acc_lim_theta: 1
+  weight_kinematics_nh: 1000
+  weight_kinematics_forward_drive: 1
+  #weight_kinematics_turning_radius: 1
+  weight_optimaltime: 1
+  weight_obstacle: 50
+  weight_viapoint: 1.0
+  weight_inflation: 0.1
+  weight_adapt_factor: 2.0
+  #weight_dynamic_obstacle: 10 # not in use yet
+  #alternative_time_cost: false # not in use yet
+
+
+  # Parallel Planning in distinctive Topologies
+  enable_homotopy_class_planning: true
+  enable_multithreading: true
+  simple_exploration: false
+  max_number_classes: 4
+  selection_cost_hysteresis: 1.0
+  selection_obst_cost_scale: 100.0
+  selection_viapoint_cost_scale: 1.0
+  selection_alternative_time_cost: false
+  roadmap_graph_no_samples: 15
+  roadmap_graph_area_width: 5 #6
+  h_signature_prescaler: 0.5 #1.0
+  h_signature_threshold: 0.1
+  obstacle_keypoint_offset: 0.1
+  obstacle_heading_threshold: 0.45
+  obstacle_hc_graph: false
+  visualize_hc_graph: false
+  viapoints_all_candidates: true
+  switching_blocking_period: 0.0
