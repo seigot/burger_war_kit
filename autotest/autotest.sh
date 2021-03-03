@@ -260,8 +260,6 @@ do
     do_game ${i} 6 225 # 180 * 5/4
     do_game ${i} 7 225 # 180 * 5/4
     do_game ${i} 8 225 # 180 * 5/4
-    do_game ${i} 9 225 # 180 * 5/4
-    do_game ${i} 10 225 # 180 * 5/4
     #do_push
 done
 
