@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="side" default="b"/> <!-- "b" = blue side, "r" = red side  -->
+  <arg name="name_space" default="enemy_bot"/>
+
+    <include file="$(find burger_navigation_level9)/launch/burger_navigation.launch" >
+      <arg name="name_space" default="$(arg name_space)"/>
+    </include>
+
+    <node pkg="burger_war_level9" type="searchRun.py" name="searchRun" output="screen">
+      <param name="side" value="$(arg side)"/>
+      <param name="name_space" value="$(arg name_space)" />
+    </node>
+
+    <include file="$(find burger_war_level9)/launch/obstacle_detector.launch">
+      <arg name="name_space" default="$(arg name_space)"/>
+    </include>
+</launch>
