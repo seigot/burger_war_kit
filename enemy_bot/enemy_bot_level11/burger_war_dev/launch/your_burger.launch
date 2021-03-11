@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="side" default="b"/> <!-- "b" = blue side, "r" = red side  -->
+  <arg name="name_space" default="enemy_bot"/>
+    <!-- You can change control program  -->
+
+
+
+    <!-- Navigation起動 -->
+    <include file="$(find burger_navigation_level11)/launch/burger_navigation.launch" />
+
+    <node pkg="burger_war_level11" type="fujita_main.py" name="Samplerun" output="screen"/>
+    <node pkg="burger_war_level11" type="enemy_image_finder.py" name="EnemyImageFinder" output="screen"/>
+    <node pkg="burger_war_level11" type="enemy_points_finder.py" name="EnemyPointsFinder" output="screen"/>
+
+<!--
+
+-->
+
+
+    <!-- End of your space  -->
+</launch>
+

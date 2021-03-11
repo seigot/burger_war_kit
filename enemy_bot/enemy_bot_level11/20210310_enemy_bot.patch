@@ -1,0 +1,165 @@
+diff --git a/burger_navigation/CMakeLists.txt b/burger_navigation/CMakeLists.txt
+index 399008d..946b5f2 100644
+--- a/burger_navigation/CMakeLists.txt
++++ b/burger_navigation/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 2.8.3)
+-project(burger_navigation)
++project(burger_navigation_level11)
+ 
+ ## Compile as C++11, supported in ROS Kinetic and newer
+ # add_compile_options(-std=c++11)
+diff --git a/burger_navigation/launch/burger_navigation.launch b/burger_navigation/launch/burger_navigation.launch
+index f9283b9..cf3a2b3 100644
+--- a/burger_navigation/launch/burger_navigation.launch
++++ b/burger_navigation/launch/burger_navigation.launch
+@@ -2,7 +2,7 @@
+ 
+ <launch>
+   <!-- Arguments -->
+-  <arg name="map_file" default="$(find burger_navigation)/maps/map.yaml"/>
++  <arg name="map_file" default="$(find burger_navigation_level11)/maps/map.yaml"/>
+   <arg name="open_rviz" default="true"/>
+   <arg name="move_forward_only" default="false"/>
+   <arg name="cmd_vel_topic" default="cmd_vel" />
+@@ -11,9 +11,11 @@
+   <arg name="initial_pose_x" default="-1.3"/>
+   <arg name="initial_pose_y" default="0.0"/>
+   <arg name="initial_pose_a" default="0.0"/>
++  <arg name="name_space" default="enemy_bot"/>
+ 
+   <!-- Map server -->
+   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
++    <param name="frame_id"  value="$(arg name_space)/map"/>
+   </node>
+ 
+ 
+@@ -53,36 +55,36 @@
+     <param name="odom_alpha2"               value="0.1"/>
+     <param name="odom_alpha3"               value="0.1"/>
+     <param name="odom_alpha4"               value="0.1"/>
+-    <param name="odom_frame_id"             value="odom"/>
+-    <param name="base_frame_id"             value="base_footprint"/>
+-    <param name="global_frame_id"           value="map"/>
++    <param name="odom_frame_id"             value="$(arg name_space)/odom"/>
++    <param name="base_frame_id"             value="$(arg name_space)/base_footprint"/>
++    <param name="global_frame_id"           value="$(arg name_space)/map"/>
+   </node>
+ 
+ 
+   <!-- move_base -->
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+-    <rosparam file="$(find burger_navigation)/param/costmap_common_params_burger.yaml" command="load" ns="global_costmap" />
+-    <rosparam file="$(find burger_navigation)/param/costmap_common_params_burger.yaml" command="load" ns="local_costmap" />
+-    <rosparam file="$(find burger_navigation)/param/local_costmap_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/global_costmap_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/move_base_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/dwa_local_planner_params_burger.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level11)/param/costmap_common_params_burger.yaml" command="load" ns="global_costmap" />
++    <rosparam file="$(find burger_navigation_level11)/param/costmap_common_params_burger.yaml" command="load" ns="local_costmap" />
++    <rosparam file="$(find burger_navigation_level11)/param/local_costmap_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level11)/param/global_costmap_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level11)/param/move_base_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level11)/param/dwa_local_planner_params_burger.yaml" command="load" />
+     <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+     <remap from="odom" to="$(arg odom_topic)"/>
+     <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+ 
+-    <param name="local_costmap/global_frame"             value="odom"/>
+-    <param name="local_costmap/robot_base_frame"             value="base_link"/>
+-    <param name="local_costmap/scan/sensor_frame"             value="base_scan"/>
+-    <param name="global_costmap/robot_base_frame"            value="base_link"/>
+-    <param name="global_costmap/global_frame"            value="map"/>
+-    <param name="global_costmap/scan/sensor_frame"             value="base_scan"/>
++    <param name="local_costmap/global_frame"             value="$(arg name_space)/odom"/>
++    <param name="local_costmap/robot_base_frame"             value="$(arg name_space)/base_link"/>
++    <param name="local_costmap/scan/sensor_frame"             value="$(arg name_space)/base_scan"/>
++    <param name="global_costmap/robot_base_frame"            value="$(arg name_space)/base_link"/>
++    <param name="global_costmap/global_frame"            value="$(arg name_space)/map"/>
++    <param name="global_costmap/scan/sensor_frame"             value="$(arg name_space)/base_scan"/>
+   </node>
+ 
+   <!-- rviz -->
+   <group if="$(arg open_rviz)"> 
+-    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find burger_navigation)/rviz/burger_navigation.rviz">
++    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find burger_navigation_level11)/rviz/burger_navigation.rviz">
+       <remap from="/move_base_simple/goal" to="move_base_simple/goal"/>
+     </node>
+   </group>
+diff --git a/burger_navigation/package.xml b/burger_navigation/package.xml
+index cceb174..b888fa4 100644
+--- a/burger_navigation/package.xml
++++ b/burger_navigation/package.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <package>
+-  <name>burger_navigation</name>
++  <name>burger_navigation_level11</name>
+   <version>0.1.0</version>
+   <description>The burger_navigation package</description>
+ 
+diff --git a/burger_war_dev/CMakeLists.txt b/burger_war_dev/CMakeLists.txt
+index 8f41bb8..83b1ff7 100644
+--- a/burger_war_dev/CMakeLists.txt
++++ b/burger_war_dev/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 2.8.3)
+-project(burger_war_dev)
++project(burger_war_level11)
+ 
+ ## Compile as C++11, supported in ROS Kinetic and newer
+ # add_compile_options(-std=c++11)
+diff --git a/burger_war_dev/launch/your_burger.launch b/burger_war_dev/launch/your_burger.launch
+index 154743b..05f9410 100644
+--- a/burger_war_dev/launch/your_burger.launch
++++ b/burger_war_dev/launch/your_burger.launch
+@@ -1,17 +1,17 @@
+ <?xml version="1.0"?>
+ <launch>
+-  <arg name="side" default="r"/> <!-- "b" = blue side, "r" = red side  -->
+-
++  <arg name="side" default="b"/> <!-- "b" = blue side, "r" = red side  -->
++  <arg name="name_space" default="enemy_bot"/>
+     <!-- You can change control program  -->
+ 
+ 
+ 
+     <!-- Navigation起動 -->
+-    <include file="$(find burger_navigation)/launch/burger_navigation.launch" />
++    <include file="$(find burger_navigation_level11)/launch/burger_navigation.launch" />
+ 
+-    <node pkg="burger_war_dev" type="fujita_main.py" name="Samplerun" output="screen"/>
+-    <node pkg="burger_war_dev" type="enemy_image_finder.py" name="EnemyImageFinder" output="screen"/>
+-    <node pkg="burger_war_dev" type="enemy_points_finder.py" name="EnemyPointsFinder" output="screen"/>
++    <node pkg="burger_war_level11" type="fujita_main.py" name="Samplerun" output="screen"/>
++    <node pkg="burger_war_level11" type="enemy_image_finder.py" name="EnemyImageFinder" output="screen"/>
++    <node pkg="burger_war_level11" type="enemy_points_finder.py" name="EnemyPointsFinder" output="screen"/>
+ 
+ <!--
+ 
+diff --git a/burger_war_dev/package.xml b/burger_war_dev/package.xml
+index b991077..43c6e49 100644
+--- a/burger_war_dev/package.xml
++++ b/burger_war_dev/package.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <package>
+-  <name>burger_war_dev</name>
++  <name>burger_war_level11</name>
+   <version>0.0.1</version>
+   <description>The burger_war development package</description>
+ 
+diff --git a/burger_war_dev/scripts/fujita_main.py b/burger_war_dev/scripts/fujita_main.py
+index 4f0ec93..a72891e 100755
+--- a/burger_war_dev/scripts/fujita_main.py
++++ b/burger_war_dev/scripts/fujita_main.py
+@@ -137,7 +137,7 @@ class SampleBot():
+         self.client.wait_for_server()
+ 
+         goal = MoveBaseGoal()
+-        goal.target_pose.header.frame_id = "map"
++        goal.target_pose.header.frame_id = "enemy_bot/map"
+         goal.target_pose.header.stamp = rospy.Time.now()
+         goal.target_pose.pose.position.x = x
+         goal.target_pose.pose.position.y = y
