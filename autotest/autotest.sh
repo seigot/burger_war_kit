@@ -260,9 +260,6 @@ function do_push(){
 for ((i=0; i<${LOOP_TIMES}; i++));
 do
     #check_latest_hash
-    do_game ${i} 1 225 # 180 * 5/4 
-    do_game ${i} 2 225 # 180 * 5/4 
-    do_game ${i} 3 225 # 180 * 5/4
     #do_game ${i} 1 225 "b" # 180 * 5/4 # only enemy level1,2,3 works r side
     #do_game ${i} 2 225 "b" # 180 * 5/4 # 
     #do_game ${i} 3 225 "b" # 180 * 5/4 # 
