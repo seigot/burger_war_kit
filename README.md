@@ -75,7 +75,7 @@ burger_war リポジトリをクローンします。
 先程作ったワークスペースの`src/`の下においてください。
 ```
 cd ~/catkin_ws/src
-git clone https://github.com/p-robotics-hub/burger_war_kit
+git clone https://github.com/seigot/burger_war_kit
 ```
 
 下記は、実際にはForkした自分のレポジトリをcloneしてください
