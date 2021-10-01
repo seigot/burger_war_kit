@@ -90,7 +90,8 @@ function do_game(){
     fi
     # start
     gnome-terminal -- bash scripts/start.sh -l ${ENEMY_LEVEL} -a # -s ${MY_SIDE}
-    adjust_layout
+    # adjust window layout
+    #adjust_layout
 
     # wait game finish
     sleep $GAME_TIME
