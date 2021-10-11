@@ -1,0 +1,295 @@
+diff --git a/burger_navigation/CMakeLists.txt b/burger_navigation/CMakeLists.txt
+index 399008d..60a62e4 100644
+--- a/burger_navigation/CMakeLists.txt
++++ b/burger_navigation/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 2.8.3)
+-project(burger_navigation)
++project(burger_navigation_level12)
+ 
+ ## Compile as C++11, supported in ROS Kinetic and newer
+ # add_compile_options(-std=c++11)
+diff --git a/burger_navigation/launch/burger_navigation.launch b/burger_navigation/launch/burger_navigation.launch
+index e6a02af..a53ca2d 100644
+--- a/burger_navigation/launch/burger_navigation.launch
++++ b/burger_navigation/launch/burger_navigation.launch
+@@ -2,8 +2,8 @@
+ 
+ <launch>
+   <!-- Arguments -->
+-  <arg name="map_file" default="$(find burger_navigation)/maps/map_high_resolution.yaml"/>
+-  <arg name="open_rviz" default="true"/>
++  <arg name="map_file" default="$(find burger_navigation_level12)/maps/map_high_resolution.yaml"/>
++  <arg name="open_rviz" default="false"/>
+   <arg name="move_forward_only" default="false"/>
+   <arg name="cmd_vel_topic" default="cmd_vel" />
+   <arg name="odom_topic" default="odom" />
+@@ -13,10 +13,11 @@
+   <arg name="initial_pose_a" default="0.0"/>
+   <arg name="robot_namespace" default=""/>
+   <arg name="rviz_file" default="burger_navigation.rviz"/>
++  <arg name="name_space" default="enemy_bot"/>
+ 
+   <!-- Map server -->
+   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+-    <param name="frame_id"  value="$(arg robot_namespace)map"/>
++    <param name="frame_id"  value="$(arg name_space)/map"/>
+   </node>
+ 
+   <!-- AMCL -->
+@@ -55,39 +56,40 @@
+     <param name="odom_alpha2"               value="0.1"/>
+     <param name="odom_alpha3"               value="0.1"/>
+     <param name="odom_alpha4"               value="0.1"/>
+-    <param name="odom_frame_id"             value="$(arg robot_namespace)odom"/>
+-    <param name="base_frame_id"             value="$(arg robot_namespace)base_footprint"/>
+-    <param name="global_frame_id"           value="$(arg robot_namespace)map"/>
++    <param name="odom_frame_id"             value="$(arg name_space)/odom"/>
++    <param name="base_frame_id"             value="$(arg name_space)/base_footprint"/>
++    <param name="global_frame_id"           value="$(arg name_space)/map"/>
+   </node>
+ 
+   <!-- move_base -->
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+     <!-- <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> -->
+-    <param name="base_local_planner" value="following_planner/FollowingPlannerROS" />
++    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
++    <!-- <param name="base_local_planner" value="following_planner/FollowingPlannerROS" /> -->
+     <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+-    <rosparam file="$(find burger_navigation)/param/costmap_common_params_burger.yaml" command="load" ns="global_costmap" />
+-    <rosparam file="$(find burger_navigation)/param/costmap_common_params_burger.yaml" command="load" ns="local_costmap" />
+-    <rosparam file="$(find burger_navigation)/param/local_costmap_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/global_costmap_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/move_base_params.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/dwa_local_planner_params_burger.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/follow_planner.yaml" command="load" />
+-    <rosparam file="$(find burger_navigation)/param/global_planner_params_burger.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/costmap_common_params_burger.yaml" command="load" ns="global_costmap" />
++    <rosparam file="$(find burger_navigation_level12)/param/costmap_common_params_burger.yaml" command="load" ns="local_costmap" />
++    <rosparam file="$(find burger_navigation_level12)/param/local_costmap_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/global_costmap_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/move_base_params.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/dwa_local_planner_params_burger.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/follow_planner.yaml" command="load" />
++    <rosparam file="$(find burger_navigation_level12)/param/global_planner_params_burger.yaml" command="load" />
+     <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+     <remap from="odom" to="$(arg odom_topic)"/>
+     <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+ 
+-    <param name="local_costmap/global_frame"             value="$(arg robot_namespace)odom"/>
+-    <param name="local_costmap/robot_base_frame"             value="$(arg robot_namespace)base_link"/>
+-    <param name="local_costmap/scan/sensor_frame"             value="$(arg robot_namespace)base_scan"/>
+-    <param name="global_costmap/robot_base_frame"            value="$(arg robot_namespace)base_link"/>
+-    <param name="global_costmap/global_frame"            value="$(arg robot_namespace)map"/>
+-    <param name="global_costmap/scan/sensor_frame"             value="$(arg robot_namespace)base_scan"/>
++    <param name="local_costmap/global_frame"             value="$(arg name_space)/odom"/>
++    <param name="local_costmap/robot_base_frame"             value="$(arg name_space)/base_link"/>
++    <param name="local_costmap/scan/sensor_frame"             value="$(arg name_space)/base_scan"/>
++    <param name="global_costmap/robot_base_frame"            value="$(arg name_space)/base_link"/>
++    <param name="global_costmap/global_frame"            value="$(arg name_space)/map"/>
++    <param name="global_costmap/scan/sensor_frame"             value="$(arg name_space)/base_scan"/>
+   </node>
+ 
+   <!-- rviz -->
+   <group if="$(arg open_rviz)"> 
+-    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find burger_navigation)/rviz/$(arg rviz_file)">
++    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find burger_navigation_level12)/rviz/$(arg rviz_file)">
+       <remap from="/move_base_simple/goal" to="move_base_simple/goal"/>
+     </node>
+   </group>
+diff --git a/burger_navigation/package.xml b/burger_navigation/package.xml
+index cceb174..0e28070 100644
+--- a/burger_navigation/package.xml
++++ b/burger_navigation/package.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <package>
+-  <name>burger_navigation</name>
++  <name>burger_navigation_level12</name>
+   <version>0.1.0</version>
+   <description>The burger_navigation package</description>
+ 
+diff --git a/burger_war_dev/CMakeLists.txt b/burger_war_dev/CMakeLists.txt
+index 8f41bb8..60abcaa 100644
+--- a/burger_war_dev/CMakeLists.txt
++++ b/burger_war_dev/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 2.8.3)
+-project(burger_war_dev)
++project(burger_war_level12)
+ 
+ ## Compile as C++11, supported in ROS Kinetic and newer
+ # add_compile_options(-std=c++11)
+diff --git a/burger_war_dev/launch/obstacle_detector.launch b/burger_war_dev/launch/obstacle_detector.launch
+index 694388c..ef3afe0 100644
+--- a/burger_war_dev/launch/obstacle_detector.launch
++++ b/burger_war_dev/launch/obstacle_detector.launch
+@@ -1,4 +1,5 @@
+ <launch>
++  <arg name="name_space" default="enemy_bot"/>
+   <arg name="robot_namespace" default=""/>
+   <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
+     <param name="active" value="true"/>
+@@ -15,12 +16,12 @@
+     <param name="max_circle_radius" value="0.16875"/>
+     <param name="radius_enlargement" value="0.0"/>
+ 
+-    <param name="frame_id" value="$(arg robot_namespace)/map"/>
++    <param name="frame_id" value="$(arg name_space)/map"/>
+   </node>
+ 
+   <node name="obstacle_tracker" pkg="obstacle_detector" type="obstacle_tracker_node">
+     <param name="loop_rate" value="15"/>
+-    <param name="frame_id" value="$(arg robot_namespace)/map"/>
++    <param name="frame_id" value="$(arg name_space)/map"/>
+     <remap from="tracked_obstacles" to="obstacles"/>
+     <param name="active" value="true"/>
+ 
+diff --git a/burger_war_dev/launch/your_burger.launch b/burger_war_dev/launch/your_burger.launch
+index f026770..f91a235 100644
+--- a/burger_war_dev/launch/your_burger.launch
++++ b/burger_war_dev/launch/your_burger.launch
+@@ -1,15 +1,18 @@
+ <?xml version="1.0"?>
+ <launch>
+-  <arg name="side" default="r"/> <!-- "b" = blue side, "r" = red side  -->
++  <arg name="side" default="b"/> <!-- "b" = blue side, "r" = red side  -->
++  <arg name="name_space" default="enemy_bot"/>
++
+   <arg name="robot_namespace" default=""/>
+   <arg name="rviz_file" default="burger_navigation.rviz"/>
+     <!-- You can change control program  -->
+ 
+   <!-- sample program node -->
+ 
+-    <include file="$(find burger_navigation)/launch/burger_navigation.launch">
++    <include file="$(find burger_navigation_level12)/launch/burger_navigation.launch">
+       <arg name="robot_namespace" default="$(arg robot_namespace)"/>
+       <arg name="rviz_file" value="$(arg rviz_file)"/>
++      <arg name="name_space" default="$(arg name_space)"/>
+ 
+       <!--  カクついたらここをコメント解除　-->
+       <!-- <arg name="cmd_vel_topic" value="/move_base/cmd_vel"/> -->
+@@ -24,9 +27,10 @@
+       <param name="robot_name" value="$(arg side)" />
+     </node> -->
+ 
+-  <node pkg="burger_war_dev" type="seigoRun2.py" name="seigoRun" output="screen">
++  <node pkg="burger_war_level12" type="seigoRun2.py" name="seigoRun_level12" output="screen">
+     <param name="side" value="$(arg side)" />
+     <param name="robot_namespace" value="$(arg robot_namespace)" />
++    <param name="name_space" value="$(arg name_space)" />
+ 
+     <!-- 何秒前までの敵検出結果を有効とするか -->
+     <param name="detect_enemy_time_tolerance" value="0.5" />
+@@ -54,10 +58,11 @@
+     <param name="escape_approach_time_interval" value="6" />
+   </node>
+ 
+-  <include file="$(find burger_war_dev)/launch/obstacle_detector.launch">
++  <include file="$(find burger_war_level12)/launch/obstacle_detector.launch">
+     <arg name="robot_namespace" default="$(arg robot_namespace)"/>
++    <arg name="name_space" default="$(arg name_space)"/>
+   </include>
+-  <node pkg="burger_war_dev" type="enemy_detector.py" name="enemy_detector_node" output="screen">
++  <node pkg="burger_war_level12" type="enemy_detector.py" name="enemy_detector_node" output="screen">
+     <param name="robot_namespace" value="$(arg robot_namespace)"/>
+   </node>
+   <!-- END sample program node -->
+diff --git a/burger_war_dev/package.xml b/burger_war_dev/package.xml
+index b991077..dcb292f 100644
+--- a/burger_war_dev/package.xml
++++ b/burger_war_dev/package.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <package>
+-  <name>burger_war_dev</name>
++  <name>burger_war_level12</name>
+   <version>0.0.1</version>
+   <description>The burger_war development package</description>
+ 
+diff --git a/burger_war_dev/scripts/enemy_detector.py b/burger_war_dev/scripts/enemy_detector.py
+index d054684..ed2628e 100755
+--- a/burger_war_dev/scripts/enemy_detector.py
++++ b/burger_war_dev/scripts/enemy_detector.py
+@@ -21,7 +21,7 @@ class EnemyDetector:
+         self.sub_obstacles   = rospy.Subscriber('obstacles', Obstacles, self.obstacles_callback)
+         self.pub_robot2enemy = rospy.Publisher('robot2enemy', Float32, queue_size=10)
+         self.pub_enemy_position = rospy.Publisher('enemy_position', Odometry, queue_size=10)
+-        self.robot_namespace = rospy.get_param('~robot_namespace', '')
++        self.robot_namespace = "enemy_bot" #rospy.get_param('~robot_namespace', '')
+         self.enemy_pos = Odometry()
+         self.enemy_pos.header.frame_id = self.robot_namespace+'/map'
+         
+@@ -75,7 +75,7 @@ class EnemyDetector:
+             quaternion = Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])
+             self.enemy_pos.pose.pose.orientation = quaternion
+             self.pub_enemy_position.publish(self.enemy_pos)
+-            
++
+             #ロボットから敵までの距離をpublish
+             self.pub_robot2enemy.publish(closest_enemy_len)
+ 
+diff --git a/burger_war_dev/scripts/seigoRun2.py b/burger_war_dev/scripts/seigoRun2.py
+index bda6fb2..9d16d9f 100755
+--- a/burger_war_dev/scripts/seigoRun2.py
++++ b/burger_war_dev/scripts/seigoRun2.py
+@@ -68,7 +68,7 @@ class SeigoBot2:
+ 
+         def load_waypoint():
+             path = os.environ['HOME'] + \
+-                '/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints_20210222.csv'
++                '/catkin_ws/src/burger_war_kit/enemy_bot/enemy_bot_level12/burger_war_dev/scripts/waypoints_20210222.csv'
+                 #'/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints.csv'
+                 # '/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints_20210222_preliminary.csv'
+ 
+@@ -119,9 +119,9 @@ class SeigoBot2:
+ 
+         self.direct_twist_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+ 
+-        rospy.wait_for_service("/move_base/clear_costmaps")
++        rospy.wait_for_service("/enemy_bot/move_base/clear_costmaps")
+         self.clear_costmap = rospy.ServiceProxy(
+-            "/move_base/clear_costmaps", Empty)
++            "/enemy_bot/move_base/clear_costmaps", Empty)
+ 
+         self.act_mode = ActMode.BASIC
+         self.get_rosparam()
+@@ -135,7 +135,7 @@ class SeigoBot2:
+ 
+     def get_rosparam(self):
+         self.my_side = rospy.get_param('~side')
+-        self.robot_namespace = rospy.get_param('~robot_namespace')
++        self.robot_namespace = "" #rospy.get_param('~robot_namespace')
+         self.enemy_time_tolerance = rospy.get_param(
+             '~detect_enemy_time_tolerance', default=0.5)
+         self.snipe_th = rospy.get_param('~snipe_distance_th', default=0.8)
+@@ -204,7 +204,7 @@ class SeigoBot2:
+ 
+     def enemy_position_callback(self, position):
+         self.enemy_position = position
+-
++        
+     def lidar_callback(self, scan):
+         self.scan = scan
+ 
+@@ -228,8 +228,8 @@ class SeigoBot2:
+             if self.detect_counter < self.counter_th:
+                 return False, 0.0, 0.0
+ 
+-        map_topic = self.robot_namespace+"map"
+-        baselink_topic = self.robot_namespace+"base_link"
++        map_topic = "enemy_bot/map" #self.robot_namespace+"map"
++        baselink_topic = "enemy_bot/base_link" #self.robot_namespace+"base_link"
+         trans, rot,  vaild = self.get_position_from_tf(
+             map_topic, baselink_topic)
+         if vaild == False:
+@@ -454,7 +454,7 @@ class SeigoBot2:
+     def send_goal(self, point):
+         print self.clear_costmap.call()
+         goal = MoveBaseGoal()
+-        goal.target_pose.header.frame_id = self.robot_namespace+"map"
++        goal.target_pose.header.frame_id = "enemy_bot/map" #self.robot_namespace+"map"
+         goal.target_pose.pose.position.x = point[0]
+         goal.target_pose.pose.position.y = point[1]
+ 
