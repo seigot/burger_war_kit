@@ -1,0 +1,39 @@
+--- following_planner/src/following_planner.cpp	2021-10-14 00:05:24.147797458 +0900
++++ ../burger_war_kit/enemy_bot/enemy_bot_level12/following_planner/src/following_planner_level12.cpp	2021-10-14 00:03:51.040130425 +0900
+@@ -1,6 +1,6 @@
+ 
+ #include <angles/angles.h>
+-#include <following_planner/following_planner.h>
++#include <following_planner_level12/following_planner_level12.h>
+ #include <geometry_msgs/Quaternion.h>
+ // #include <nav_core/parameter_magic.h>
+ #include <pluginlib/class_list_macros.h>
+@@ -8,9 +8,9 @@
+ #include <tf2_ros/buffer.h>
+ #include <tf2_ros/transform_listener.h>
+ 
+-PLUGINLIB_EXPORT_CLASS(following_planner::FollowingPlannerROS, nav_core::BaseLocalPlanner)
++PLUGINLIB_EXPORT_CLASS(following_planner_level12::FollowingPlannerROS, nav_core::BaseLocalPlanner)
+ 
+-namespace following_planner
++namespace following_planner_level12
+ {
+ 	enum GoalStatus
+ 	{
+@@ -39,8 +39,8 @@
+ 
+ 		status_ = GoalStatus::MOVING;
+ 		getRosparam();
+-		robot_frame_ = "base_footprint";
+-		map_frame_ = "map";
++		robot_frame_ = "enemy_bot/base_footprint";
++		map_frame_ = "enemy_bot/map";
+ 	}
+ 
+ 	void FollowingPlannerROS::getRosparam()
+@@ -341,4 +341,4 @@
+ 		tf::Quaternion quat(p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w);
+ 		tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
+ 	}
+-}; // namespace following_planner
++}; // namespace following_planner_level12

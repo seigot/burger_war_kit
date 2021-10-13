@@ -1,0 +1,65 @@
+diff --git a/burger_war_dev/scripts/seigoRun2.py b/burger_war_dev/scripts/seigoRun2.py
+index 2512b33..e756816 100755
+--- a/burger_war_dev/scripts/seigoRun2.py
++++ b/burger_war_dev/scripts/seigoRun2.py
+@@ -27,6 +27,9 @@ from cv_bridge import CvBridge, CvBridgeError
+ 
+ from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
+ 
++def callback_action_done(state, result):
++    print("action done", str(state), str(result))
++
+ 
+ class ActMode(Enum):
+     BASIC = 1
+@@ -69,7 +72,7 @@ class SeigoBot2:
+ 
+         def load_waypoint():
+             path = os.environ['HOME'] + \
+-                '/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints.csv'
++                '/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints_20210222_preliminary.csv'
+                 #'/catkin_ws/src/burger_war_dev/burger_war_dev/scripts/waypoints_20210222.csv'
+             return Waypoints(path, self.my_side)
+ 
+@@ -415,22 +418,27 @@ class SeigoBot2:
+ 
+         pre_status = self.status
+         self.status = self.move_base_client.get_state()
++        self.get_result = self.move_base_client.get_result()
+         if pre_status != self.status:
+             self.mlog("move_base_changed", str(pre_status) + "," + str(self.status))
+             rospy.loginfo(self.move_base_client.get_goal_status_text())
+ 
++        if pre_status == actionlib.GoalStatus.PREEMPTED and self.status == actionlib.GoalStatus.SUCCEEDED:
++            print("aaaa", pre_status, self.status)
++            #return
++
+         if self.status == actionlib.GoalStatus.ACTIVE:
+             # while heading to current target
+             # goalまでにtargetを取得したら次の的を取りに行く
+             current_target_number = self.waypoint.get_current_target_number()
+-            #if current_target_number == self.my_get_target_no :
+-            #    print("get current_target, go next : ", current_target_number)
+-            #    self.cancel_goal()
++            if current_target_number == self.my_get_target_no :
++                print("get current_target, go next : ", current_target_number)
++                self.cancel_goal()
+             #    #while self.move_base_client.get_state() == actionlib.GoalStatus.ACTIVE:
+             #    #    #print(self.move_base_client.get_state())
+             #    #    # wait until PREEMPTED state
+             #    #    rospy.sleep(0.1)
+-            #    self.move_base_client.wait_for_result(rospy.Duration(10))
++                self.move_base_client.wait_for_result(rospy.Duration(10))
+             #    # [fix] ここでcurrentwaypointを指定しないと次のgoalがskipされるため以下send_goal処理を実施
+             #    #       move baseにqueueされている命令を何かしら破棄する必要があるかもしれない
+             #    #self.send_goal(self.waypoint.get_current_waypoint())
+@@ -472,7 +480,8 @@ class SeigoBot2:
+         goal.target_pose.pose.orientation.w = q[3]
+         goal.target_pose.header.stamp = rospy.Time.now()
+ 
+-        self.move_base_client.send_goal(goal)
++        #self.move_base_client.send_goal(goal)
++        self.move_base_client.send_goal(goal, done_cb=callback_action_done)
+         rospy.sleep(0.5)
+ 
+         self.mlog("send_goal",

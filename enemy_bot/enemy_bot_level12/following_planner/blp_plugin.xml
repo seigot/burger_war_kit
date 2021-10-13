@@ -1,0 +1,7 @@
+<library path="lib/libfollowing_planner_level12">
+    <class name="following_planner_level12/FollowingPlannerROS" type="following_planner_level12::FollowingPlannerROS" base_class_type="nav_core::BaseLocalPlanner">
+        <description>
+            use purepursuit
+        </description>
+    </class>
+</library>
